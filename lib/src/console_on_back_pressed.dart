@@ -37,9 +37,7 @@ _hookOnBackPressed() {
     final dispatcher = _OnBackPressedDispatcher();
     WidgetsBinding.instance.addObserver(dispatcher);
     _hookedOnBackPressedDispatcher = dispatcher;
-    if (AnConsole.instance.isEnable) {
-      _show();
-    }
+    _willShow();
   } catch (_) {}
 }
 
@@ -53,25 +51,34 @@ OverlayEntry _createFloatingButton() {
           _ConsoleFloatingButton(toolsStatus: _toolsStatus));
 }
 
+bool _willShowing = false;
+
+void _willShow() {
+  if (_willShowing) return;
+  try {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _willShowing = false;
+      if (!_toolsStatus.value) return;
+      if (_btnConsole == null) {
+        _btnConsole = _createFloatingButton();
+        var navigator = AnConsole.instance._navigator;
+        if (navigator == null) {
+          navigator = WidgetsBinding.instance.renderViewElement!
+              .findStateForChildren<NavigatorState>();
+          AnConsole.instance._navigator = navigator;
+        }
+        navigator?.overlay!.insert(_btnConsole!);
+      }
+    });
+    _willShowing = true;
+  } catch (_) {}
+}
+
 void _show() {
   if (_toolsStatus.value) return;
   _toolsStatus.value = true;
   if (_btnConsole == null) {
-    try {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!_toolsStatus.value) return;
-        if (_btnConsole == null) {
-          _btnConsole = _createFloatingButton();
-          var navigator = AnConsole.instance._navigator;
-          if (navigator == null) {
-            navigator = WidgetsBinding.instance.renderViewElement!
-                .findStateForChildren<NavigatorState>();
-            AnConsole.instance._navigator = navigator;
-          }
-          navigator?.overlay!.insert(_btnConsole!);
-        }
-      });
-    } catch (_) {}
+    _willShow();
   }
 }
 

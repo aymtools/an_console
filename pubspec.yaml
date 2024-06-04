@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ^0.19.0
+  intl: any
   linked_scroll_controller: ^0.2.0
-  shared_preferences: ^2.0.10
+  shared_preferences: any
 
 
 flutter:

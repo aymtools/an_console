@@ -1,39 +1,29 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+A developer can fully customize the console content, which can be used to display logs on the UI,
+serve as an app configuration center, and more functionalities.
 
 ```dart
-const like = 'sample';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //必须在WidgetsFlutterBinding.ensureInitialized 之后使用
+  AnConsole.instance.addConsole('Conf', DebugConfig());
+  AnConsole.instance.addConsole('DebugDemo', DebugDemo());
+  // 加入任何你自定义的widget，并且给他一个title
+
+  runApp(const MyApp());
+
+  //放在runApp之后也可以
+}
+
+
 ```
+
+See [example](https://github.com/aymtools/an_console/blob/master/example/) for detailed test
+case.
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+If you encounter issues, here are some tips for debug, if nothing helps report
+to [issue tracker on GitHub](https://github.com/aymtools/an_console/issues):
+

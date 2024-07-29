@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:an_console/src/console.dart';
+import 'package:an_console/an_console.dart';
 import 'package:an_console/src/widget/change_notifier_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -35,14 +35,19 @@ class EventManagerConsole<T> extends StatefulWidget {
   final int multipleWith;
   final Widget Function(BuildContext context, int position, T event)
       eventBuilder;
+  final double eventSeparatorPadding;
+  final List<Widget> bottomRightFloatingActions;
 
   const EventManagerConsole({
     super.key,
     required this.manager,
     required this.eventBuilder,
     int? multipleWith,
-  }) : multipleWith =
-            multipleWith == null || multipleWith < 1 ? 1 : multipleWith;
+    double? eventSeparatorPadding,
+    this.bottomRightFloatingActions = const <Widget>[],
+  })  : multipleWith =
+            multipleWith == null || multipleWith < 1 ? 1 : multipleWith,
+        eventSeparatorPadding = eventSeparatorPadding ?? 12;
 
   @override
   State<EventManagerConsole<T>> createState() => _EventManagerConsoleState<T>();
@@ -57,7 +62,7 @@ class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
     final width = widget.multipleWith <= 1
         ? 0.0
         : MediaQuery.of(context).size.width * widget.multipleWith;
-    return ChangeNotifierBuilder<EventManager<T>>(
+    Widget result = ChangeNotifierBuilder<EventManager<T>>(
       changeNotifier: widget.manager,
       builder: (_, logs, __) {
         final data = logs._buffer;
@@ -76,11 +81,18 @@ class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
                     ),
                   );
           },
-          separatorBuilder: (context, _) =>
-              const Padding(padding: EdgeInsets.only(top: 12)),
+          separatorBuilder: (context, _) => Padding(
+              padding: EdgeInsets.only(top: widget.eventSeparatorPadding)),
           itemCount: data.length,
         );
       },
     );
+    if (widget.bottomRightFloatingActions.isNotEmpty) {
+      result = FloatingActions.bottomRight(
+        actions: widget.bottomRightFloatingActions,
+        child: result,
+      );
+    }
+    return result;
   }
 }

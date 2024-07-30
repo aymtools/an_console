@@ -25,8 +25,8 @@ class _ConsoleWidget extends StatelessWidget {
               child: MediaQuery(
                 data: mediaQuery.copyWith(
                   padding: mediaQuery.padding.copyWith(top: 0),
-                  textScaler: TextScaler.noScaling,
-
+                  textScaleFactor: 1.0,
+                  // textScaler: TextScaler.noScaling,
                 ),
                 child: Stack(
                   children: [

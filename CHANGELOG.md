@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Automated publishing.
+
 ## 0.1.2
 
 * Enhance the ability to parse Map in JsonView.

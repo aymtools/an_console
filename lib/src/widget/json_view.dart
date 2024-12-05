@@ -94,7 +94,7 @@ JsonNodes _parsing(dynamic json) {
   } else if (json is Map) {
     node = JTreeNode.root(type: NodeType.mapStart, value: json);
     result.add(node);
-    result.addAll(_jmap(node, json as Map<String, dynamic>));
+    result.addAll(_jmap(node, json));
   } else {
     throw 'not json';
   }
@@ -112,14 +112,14 @@ List<JTreeNode> _jp(JTreeNode node, dynamic json) {
   if (json is List) {
     return _jlist(node, json);
   } else if (json is Map) {
-    return _jmap(node, json as Map<String, dynamic>);
+    return _jmap(node, json);
   }
 
   List<JTreeNode> result = [];
   return result;
 }
 
-List<JTreeNode> _jmap(JTreeNode node, Map<String, dynamic> json) {
+List<JTreeNode> _jmap(JTreeNode node, Map json) {
   List<JTreeNode> result = [];
   // level++;
   // if (_maxLevel < level) {
@@ -128,7 +128,7 @@ List<JTreeNode> _jmap(JTreeNode node, Map<String, dynamic> json) {
 
   json.forEach((key, value) {
     node = node.makeChild(
-        path: key, type: NodeType.mapKey, value: MapEntry(key, value));
+        path: '$key', type: NodeType.mapKey, value: MapEntry(key, value));
     // result.add(JsonNode(level, NodeType.mapKey, MapEntry(key, value), _node));
     result.add(node);
     if (!isPrimitive(value)) {
@@ -351,7 +351,7 @@ class _JsonNodeBuilderState extends State<JsonNodeBuilder> {
         result = const Text('{');
         break;
       case NodeType.mapKey:
-        MapEntry<String, dynamic> data = node.value;
+        MapEntry data = node.value;
         final value = data.value;
         result = Row(
           crossAxisAlignment: CrossAxisAlignment.start,

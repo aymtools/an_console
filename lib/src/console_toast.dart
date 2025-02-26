@@ -26,7 +26,7 @@ class _ConsoleToastQueue with ChangeNotifier {
 }
 
 class _ConsoleToast extends StatelessWidget {
-  const _ConsoleToast({super.key});
+  const _ConsoleToast();
 
   @override
   Widget build(BuildContext context) {

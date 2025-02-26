@@ -9,13 +9,17 @@ import 'package:intl/intl.dart';
 import 'events.dart';
 
 String _logFiles = '';
+
+/// 转储文件的日期格式
 final fileLogDateFormat = DateFormat('MM-dd_HH_mm_ss_S');
 
 extension AnConsoleLogFileSaver on AnConsole {
+  /// 设置默认的日志文件存储目录
   set logFilesBasePath(String logFiles) {
     _logFiles = logFiles;
   }
 
+  /// 将指定类型的的日志内容写入到日志文件
   Future<bool> saveLogToFile(String logType,
       {String? content,
       Future<void> Function(LogWriter writer)? customWrite}) async {
@@ -56,6 +60,7 @@ extension AnConsoleLogFileSaver on AnConsole {
   }
 }
 
+// 日志 Writer
 abstract class LogWriter {
   void writeByte(int value);
 
@@ -95,6 +100,7 @@ class _LogWriter extends LogWriter {
 }
 
 extension EventManagerSaveToFileExt<T> on EventManager<T> {
+  /// 将当前管理的信息保存到文件
   void saveEventsToFile(
       {String? logFile, FutureOr<String> Function(T event)? convert}) {
     final events = buffers;

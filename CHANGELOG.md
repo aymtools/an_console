@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Add documentation and usage instructions.
+
 ## 0.1.3
 
 * Automated publishing.

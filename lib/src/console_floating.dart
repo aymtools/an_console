@@ -3,7 +3,7 @@ part of 'console.dart';
 class _ConsoleFloatingButton extends StatelessWidget {
   final ValueNotifier<bool> toolsStatus;
 
-  const _ConsoleFloatingButton({super.key, required this.toolsStatus});
+  const _ConsoleFloatingButton({required this.toolsStatus});
 
   @override
   Widget build(BuildContext context) {

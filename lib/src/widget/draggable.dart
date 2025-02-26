@@ -3,11 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// 自定义的可拖动的悬浮 按钮 类似FloatingAction 但是使用overlay来实现
 class FloatingDraggableButton extends StatefulWidget {
+  /// 初始化的位置
   final Offset? initOffset;
   final Widget child;
   final void Function()? onTap;
   final void Function()? onLongPress;
+
+  /// 是否存入到  sharedPreferences 为空时 不存
   final String? sharedPreferencesKEY;
 
   const FloatingDraggableButton(
@@ -59,7 +63,7 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
             _maxOffset = size;
           });
         }
-      } catch (e, st) {}
+      } catch (ignore) {}
     }
 
     SharedPreferences.getInstance().then((value) {

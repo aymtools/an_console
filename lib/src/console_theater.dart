@@ -71,10 +71,7 @@ class _RenderTheatre extends RenderBox
     required TextDirection textDirection,
     int skipCount = 0,
     Clip clipBehavior = Clip.hardEdge,
-  })  : assert(skipCount != null),
-        assert(skipCount >= 0),
-        assert(textDirection != null),
-        assert(clipBehavior != null),
+  })  : assert(skipCount >= 0),
         _textDirection = textDirection,
         _skipCount = skipCount,
         _clipBehavior = clipBehavior {
@@ -119,7 +116,6 @@ class _RenderTheatre extends RenderBox
   int _skipCount;
 
   set skipCount(int value) {
-    assert(value != null);
     if (_skipCount != value) {
       _skipCount = value;
       markNeedsLayout();
@@ -133,7 +129,6 @@ class _RenderTheatre extends RenderBox
   Clip _clipBehavior = Clip.hardEdge;
 
   set clipBehavior(Clip value) {
-    assert(value != null);
     if (value != _clipBehavior) {
       _clipBehavior = value;
       markNeedsPaint();

@@ -5,6 +5,7 @@ import 'package:an_console/src/widget/change_notifier_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
+/// 定义定长的事件管理器
 class EventManager<E> with ChangeNotifier {
   final int _bufferSize;
 
@@ -30,6 +31,7 @@ class EventManager<E> with ChangeNotifier {
   }
 }
 
+/// 对定长 的事件管理器的默认控制台实现
 class EventManagerConsole<T> extends StatefulWidget {
   final EventManager<T> manager;
   final int multipleWith;

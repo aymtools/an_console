@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
+/// 仅用在AnConsole中的自定义控制台 为控制台增加一系列悬浮按钮 会自动联动滑动隐藏
 class FloatingActions extends StatefulWidget {
+  /// 内容
   final Widget child;
+
+  /// 构建是默认是否展示
   final bool initShowFloating;
+
+  /// 构建悬浮内容
   final Widget Function(BuildContext) floatingActionsBuilder;
 
   const FloatingActions(
@@ -11,6 +17,7 @@ class FloatingActions extends StatefulWidget {
       this.initShowFloating = true,
       required this.floatingActionsBuilder});
 
+  /// 默认放置在右下角
   factory FloatingActions.bottomRight({
     Key? key,
     required Widget child,
@@ -40,6 +47,7 @@ class FloatingActions extends StatefulWidget {
         child: child);
   }
 
+  /// 默认放置在右上角
   factory FloatingActions.topRight({
     Key? key,
     required Widget child,

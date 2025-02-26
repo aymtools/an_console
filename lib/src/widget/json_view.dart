@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
+/// json 节点类型
 enum NodeType {
   listStart,
   listIndex,
@@ -15,6 +16,7 @@ enum NodeType {
   value,
 }
 
+/// json nodes 树形结构
 class JsonNodes {
   int _maxLevel = 0;
   final List<JTreeNode> nodes;
@@ -25,6 +27,7 @@ class JsonNodes {
   JsonNodes(this.nodes, this.rootTreeNode);
 }
 
+/// 一个节点
 class JTreeNode {
   JTreeNode? _parent;
 
@@ -171,6 +174,7 @@ List<JTreeNode> _jlist(JTreeNode node, List<dynamic> json) {
   return result;
 }
 
+/// 是否是基础类似
 bool isPrimitive(dynamic value) {
   return value is double || value is int || value is String || value is bool;
 }
@@ -179,6 +183,7 @@ Future<JsonNodes> _defJsonParser(
         json, JsonNodes Function(dynamic json) parsing) =>
     compute(parsing, json);
 
+/// 构建一个json展示的widget
 class JsonView extends StatefulWidget {
   static Future<JsonNodes> Function(
       dynamic, JsonNodes Function(dynamic) parsing) jsonParser = _defJsonParser;
@@ -192,10 +197,12 @@ class JsonView extends StatefulWidget {
       : sliver = false,
         builder = null;
 
+  /// 构建为Sliver
   const JsonView.sliver({super.key, required this.json})
       : sliver = true,
         builder = null;
 
+  /// 自定义节点展示
   const JsonView.custom(
       {super.key,
       required this.json,
@@ -289,6 +296,7 @@ class _JsonViewState extends State<JsonView> {
   }
 }
 
+/// 节点Build
 class JsonNodeBuilder extends StatefulWidget {
   final JTreeNode node;
   final LinkedScrollControllerGroup controllers;

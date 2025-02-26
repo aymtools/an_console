@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+/// 自定义一个 ChangeNotifierBuilder
 class ChangeNotifierBuilder<T extends ChangeNotifier> extends StatefulWidget {
   final T changeNotifier;
   final Widget Function(BuildContext, T, Widget? child) builder;

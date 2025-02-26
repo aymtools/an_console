@@ -1,7 +1,7 @@
 part of 'console.dart';
 
 class _ConsoleWidget extends StatelessWidget {
-  const _ConsoleWidget({super.key});
+  const _ConsoleWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _ConsoleWidget extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () => AnConsole
                               .instance._overlayController?._willPop
-                              ?.call(),
+                              .call(),
                           behavior: HitTestBehavior.opaque,
                           child: Icon(
                             Icons.arrow_back,
@@ -338,7 +338,7 @@ class _ConsoleRouteBottomSheet<T> extends _ConsoleRoute<T> {
 }
 
 class _ConsoleRouteMainWidget extends StatefulWidget {
-  const _ConsoleRouteMainWidget({super.key});
+  const _ConsoleRouteMainWidget();
 
   @override
   State<_ConsoleRouteMainWidget> createState() =>
@@ -412,7 +412,7 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
 class _ConsoleRoutePageWidget extends StatelessWidget {
   final _ConsoleRoute route;
 
-  const _ConsoleRoutePageWidget({super.key, required this.route});
+  const _ConsoleRoutePageWidget({required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -461,7 +461,7 @@ class _BaseRouteDialogWidget extends StatelessWidget {
   final Widget? title;
   final Widget content;
 
-  const _BaseRouteDialogWidget({super.key, this.title, required this.content});
+  const _BaseRouteDialogWidget({this.title, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -522,7 +522,7 @@ List<Widget> _childList(List<Widget> children, Widget separator) {
 class _ConsoleRouteDialogWidget extends StatelessWidget {
   final _ConsoleRouteDialog route;
 
-  const _ConsoleRouteDialogWidget({super.key, required this.route});
+  const _ConsoleRouteDialogWidget({required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -595,7 +595,7 @@ class _ConsoleRouteDialogWidget extends StatelessWidget {
 class _ConsoleRouteBottomSheetWidget extends StatelessWidget {
   final _ConsoleRouteBottomSheet route;
 
-  const _ConsoleRouteBottomSheetWidget({super.key, required this.route});
+  const _ConsoleRouteBottomSheetWidget({required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -702,7 +702,7 @@ class _OptionMultiSelectState<T> extends State<_OptionMultiSelect<T>> {
 class _KeepAliveWrapper extends StatefulWidget {
   final Widget child;
 
-  const _KeepAliveWrapper({super.key, required this.child});
+  const _KeepAliveWrapper({required this.child});
 
   @override
   State<_KeepAliveWrapper> createState() => _KeepAliveWrapperState();

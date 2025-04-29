@@ -83,9 +83,7 @@ void _show() {
 }
 
 void _hide() {
-  if (_btnConsole == null) {
-    _toolsStatus.value = false;
-  }
+  _toolsStatus.value = false;
 }
 
 extension on Element {

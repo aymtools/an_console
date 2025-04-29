@@ -17,7 +17,6 @@ class EventManager<E> with ChangeNotifier {
   List<E> get buffers => _buffer.toList(growable: false);
 
   void addEvent(E event) {
-    if (!AnConsole.instance.isEnable) return;
     while (_buffer.length >= _bufferSize) {
       _buffer.removeLast();
     }
@@ -67,7 +66,7 @@ class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
     Widget result = ChangeNotifierBuilder<EventManager<T>>(
       changeNotifier: widget.manager,
       builder: (_, logs, __) {
-        final data = logs._buffer;
+        final data = logs.buffers;
         return ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           itemBuilder: (context, index) {

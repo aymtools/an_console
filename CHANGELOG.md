@@ -1,3 +1,7 @@
+## 0.2.0
+
+* EventManager can be used as an interface.
+
 ## 0.1.4
 
 * Add documentation and usage instructions.

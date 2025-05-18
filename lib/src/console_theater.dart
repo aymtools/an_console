@@ -11,7 +11,7 @@ import 'package:flutter/rendering.dart';
 ///
 /// The first [skipCount] children are considered "offstage".
 class ConsoleTheatre extends MultiChildRenderObjectWidget {
-  ConsoleTheatre({
+  const ConsoleTheatre({
     super.key,
     this.skipCount = 0,
     this.clipBehavior = Clip.hardEdge,
@@ -24,10 +24,10 @@ class ConsoleTheatre extends MultiChildRenderObjectWidget {
   final Clip clipBehavior;
 
   @override
-  _TheatreElement createElement() => _TheatreElement(this);
+  MultiChildRenderObjectElement createElement() => _TheatreElement(this);
 
   @override
-  _RenderTheatre createRenderObject(BuildContext context) {
+  RenderBox createRenderObject(BuildContext context) {
     return _RenderTheatre(
       skipCount: skipCount,
       textDirection: Directionality.of(context),
@@ -35,9 +35,10 @@ class ConsoleTheatre extends MultiChildRenderObjectWidget {
     );
   }
 
+  // ignore: library_private_types_in_public_api
   @override
-  void updateRenderObject(BuildContext context, _RenderTheatre renderObject) {
-    renderObject
+  void updateRenderObject(BuildContext context, RenderObject renderObject) {
+    (renderObject as _RenderTheatre)
       ..skipCount = skipCount
       ..textDirection = Directionality.of(context)
       ..clipBehavior = clipBehavior;

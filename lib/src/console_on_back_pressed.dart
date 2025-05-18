@@ -63,7 +63,7 @@ void _willShow() {
         _btnConsole = _createFloatingButton();
         var navigator = AnConsole.instance._navigator;
         if (navigator == null) {
-          navigator = WidgetsBinding.instance.renderViewElement!
+          navigator = WidgetsBinding.instance.rootElement!
               .findStateForChildren<NavigatorState>();
           AnConsole.instance._navigator = navigator;
         }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 自定义的可拖动的悬浮 按钮 类似FloatingAction 但是使用overlay来实现
@@ -45,7 +46,7 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
 
     void initMax() {
       try {
-        final parentSize = WidgetsBinding.instance.renderView.size;
+        final parentSize = RendererBinding.instance.renderViews.first.size;
         final currSize = _key.currentContext?.size;
         final Offset size = currSize == null
             ? Offset(parentSize.width, parentSize.height)
@@ -63,7 +64,7 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
             _maxOffset = size;
           });
         }
-      } catch (ignore) {}
+      } catch (_) {}
     }
 
     SharedPreferences.getInstance().then((value) {
@@ -84,7 +85,7 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
   }
 
   void _updateMax() {
-    final parentSize = WidgetsBinding.instance.renderView.size;
+    final parentSize = RendererBinding.instance.renderViews.first.size;
     final currSize = _key.currentContext?.size;
     final Offset size = currSize == null
         ? Offset(parentSize.width, parentSize.height)
@@ -132,7 +133,9 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
           if (!_isDragging) {
             var p = event.position;
             if ((p.dx - _offsetDown!.dx).abs() < 5 ||
-                (p.dy - _offsetDown!.dy).abs() < 5) return;
+                (p.dy - _offsetDown!.dy).abs() < 5) {
+              return;
+            }
           }
           _updatePosition(event.delta);
           setState(() {

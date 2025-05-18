@@ -1,4 +1,4 @@
-library an_console;
+library;
 
 export 'src/console.dart';
 export 'src/tools/events.dart';

@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Upgrading Dependencies.
+
 ## 0.2.0
 
 * EventManager can be used as an interface.

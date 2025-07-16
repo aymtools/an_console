@@ -1,5 +1,6 @@
 import 'package:an_console/an_console.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DebugConfig extends StatelessWidget {
   const DebugConfig({super.key});
@@ -129,6 +130,41 @@ class DebugDemo2 extends StatelessWidget {
     return Center(
       child: Text('这是跳转的页面,构造函数传入参数:$param'),
     );
+  }
+}
+
+class SharedPreferencesViewer extends StatefulWidget {
+  final SharedPreferences sharedPreferences;
+
+  const SharedPreferencesViewer({super.key, required this.sharedPreferences});
+
+  @override
+  State<SharedPreferencesViewer> createState() =>
+      _SharedPreferencesViewerState();
+}
+
+class _SharedPreferencesViewerState extends State<SharedPreferencesViewer> {
+  @override
+  Widget build(BuildContext context) {
+    final keys = widget.sharedPreferences.getKeys().toList();
+    return ListView.separated(
+        itemBuilder: (_, index) {
+          final key = keys[index];
+          final value = widget.sharedPreferences.get(key);
+          return ListTile(
+            title: Text(key),
+            subtitle: Text(value.toString()),
+            onTap: () async {
+              final select = await AnConsole.showConfirm(content: '是否要删除$key？');
+              if (select) {
+                await widget.sharedPreferences.remove(key);
+                setState(() {});
+              }
+            },
+          );
+        },
+        separatorBuilder: (context, index) => const Divider(),
+        itemCount: keys.length);
   }
 }
 

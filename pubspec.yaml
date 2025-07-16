@@ -1,6 +1,6 @@
 name: an_console
 description: A developer can fully customize the console content, which can be used to display logs on the UI, serve as an app configuration center, and more functionalities.
-version: 0.3.0
+version: 0.4.0
 homepage: https://github.com/aymtools/an_console/
 issue_tracker: https://github.com/aymtools/an_console/issues
 topics:
@@ -15,9 +15,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: any
-  shared_preferences: any
-  collection: any
+  intl: ^0.19.0
+  shared_preferences: ^2.2.3
+  collection: ^1.19.0
 
   linked_scroll_controller: ^0.2.0
 

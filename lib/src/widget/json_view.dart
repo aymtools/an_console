@@ -86,7 +86,8 @@ JsonNodes _parsing(dynamic json) {
       (json.trim().startsWith('{') || json.trim().startsWith('['))) {
     return _parsing(jsonDecode(json));
   } else if (isPrimitive(json)) {
-    return JsonNodes([], JTreeNode.root(type: NodeType.value, value: json));
+    final root = JTreeNode.root(type: NodeType.value, value: json);
+    return JsonNodes([root], root);
   }
   List<JTreeNode> result = [];
   late JTreeNode node;

@@ -19,44 +19,38 @@ extension AnConsoleLogFileSaver on AnConsole {
     _logFiles = logFiles;
   }
 
+  String get logFilesBasePath => _logFiles;
+
   /// 将指定类型的的日志内容写入到日志文件
-  Future<bool> saveLogToFile(String logType,
+  Future<String> saveLogToFile(String logType,
       {String? content,
+      String? fileNamePrefix,
       Future<void> Function(LogWriter writer)? customWrite}) async {
     assert(_logFiles.isNotEmpty, 'logFilesBasePath must init');
     if (_logFiles.isEmpty) {
-      return false;
+      return '';
     }
 
     final logPath =
-        '$_logFiles/$logType/${fileLogDateFormat.format(DateTime.now())}.txt';
+        '$_logFiles/$logType/${fileNamePrefix == null ? '' : '$fileNamePrefix-'}${fileLogDateFormat.format(DateTime.now())}.txt';
     File file = File(logPath);
 
-    Future<void> makeParentDir(Directory parent) async {
-      if (!await parent.parent.exists()) {
-        await makeParentDir(parent.parent);
-      }
-      await parent.create();
-    }
-
-    if (!await file.parent.exists()) {
-      await makeParentDir(file.parent);
-    }
     if (!(await file.exists())) {
-      await file.create();
+      await file.create(recursive: true);
     }
     final writer = await file.open(mode: FileMode.write);
     if (content != null) {
       await writer.writeString(content);
-      writer.flush();
+      await writer.flush();
     }
     if (customWrite != null) {
-      LogWriter w = _LogWriter(writer);
+      _LogWriter w = _LogWriter(writer);
       await customWrite(w);
-      await w.flush();
+      w.flush();
+      await w._future;
     }
     await writer.close();
-    return true;
+    return logPath;
   }
 }
 
@@ -68,7 +62,7 @@ abstract class LogWriter {
 
   void writeString(String string, {Encoding encoding = utf8});
 
-  Future<void> flush();
+  void flush();
 }
 
 class _LogWriter extends LogWriter {
@@ -79,33 +73,33 @@ class _LogWriter extends LogWriter {
   Future _future = SynchronousFuture('');
 
   @override
-  Future<void> flush() {
-    return _future = _future.then((_) => writer.flush());
+  void flush() {
+    _future = _future.then((_) => writer.flush());
   }
 
   @override
-  void writeByte(int value) async {
+  void writeByte(int value) {
     _future = _future.then((_) => writer.writeByte(value));
   }
 
   @override
-  void writeBytes(List<int> buffer, [int start = 0, int? end]) async {
+  void writeBytes(List<int> buffer, [int start = 0, int? end]) {
     _future = _future.then((_) => writer.writeFrom(buffer, start, end));
   }
 
   @override
-  void writeString(String string, {Encoding encoding = utf8}) async {
+  void writeString(String string, {Encoding encoding = utf8}) {
     _future = _future.then((_) => writer.writeString(string, encoding: utf8));
   }
 }
 
 extension EventManagerSaveToFileExt<T> on EventManager<T> {
   /// 将当前管理的信息保存到文件
-  void saveEventsToFile(
+  Future<String> saveEventsToFile(
       {String? logFile, FutureOr<String> Function(T event)? convert}) {
     final events = buffers;
     convert ??= (log) => log.toString();
-    AnConsole.instance.saveLogToFile(
+    return AnConsole.instance.saveLogToFile(
       logFile ?? T.toString(),
       customWrite: (writer) async {
         for (var log in events) {

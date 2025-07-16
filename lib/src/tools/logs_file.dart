@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:an_console/src/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 
 import 'events.dart';
 
@@ -31,8 +32,16 @@ extension AnConsoleLogFileSaver on AnConsole {
       return '';
     }
 
-    final logPath =
+    var logPath =
         '$_logFiles/$logType/${fileNamePrefix == null ? '' : '$fileNamePrefix-'}${fileLogDateFormat.format(DateTime.now())}.txt';
+    logPath = join(_logFiles, logType);
+    if (fileNamePrefix?.isNotEmpty == true) {
+      logPath = join(logPath,
+          '$fileNamePrefix-${fileLogDateFormat.format(DateTime.now())}.txt');
+    } else {
+      logPath =
+          join(logPath, '${fileLogDateFormat.format(DateTime.now())}.txt');
+    }
     File file = File(logPath);
 
     if (!(await file.exists())) {

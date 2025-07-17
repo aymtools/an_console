@@ -178,6 +178,8 @@ void main() {
   runApp(const MyApp());
 
   //放在runApp之后也可以
+  SharedPreferences.getInstance().then((sp) => AnConsole.instance
+      .addConsole('SP', SharedPreferencesViewer(sharedPreferences: sp)));
 }
 
 class MyApp extends StatelessWidget {

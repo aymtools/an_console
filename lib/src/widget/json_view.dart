@@ -257,7 +257,7 @@ class _JsonViewState extends State<JsonView> {
             return widget.sliver ? SliverToBoxAdapter(child: r) : r;
           } else if (snapshot.hasData) {
             final data = snapshot.requireData;
-            if (widget.builder != null) {
+            if (widget.builder != null && data.nodes.length > 1) {
               return widget.builder!(context, data);
             }
             return _buildJsonV(data);
@@ -280,6 +280,15 @@ class _JsonViewState extends State<JsonView> {
       final node = jsonNodes.nodes[index];
       return JsonNodeBuilder(
           node: node, controllers: _controllers, defWidth: defWidth);
+    }
+
+    if (jsonNodes.nodes.length == 1) {
+      /// 只有一个基本类型的数据时直接展示
+      final firstWidget = Text('${jsonNodes.nodes.first.value}');
+
+      return widget.sliver
+          ? SliverToBoxAdapter(child: firstWidget)
+          : firstWidget;
     }
 
     return widget.sliver

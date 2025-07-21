@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:an_console/src/console.dart';
@@ -16,7 +17,7 @@ typedef FloatingActionsBuilder = List<FloatingActionButton> Function(
 /// 文件浏览器 如果点击了 目录会自动跳转到下一级目录
 /// 可以直接使用  [FileBrowser.setDefaultConfigs] 来直接配置全局的行为
 class FileBrowser extends StatefulWidget {
-  final String path;
+  final FutureOr<String> path;
 
   /// 构建右下角的悬浮按钮
   final FloatingActionsBuilder? actions;
@@ -65,6 +66,7 @@ class FileBrowser extends StatefulWidget {
 
 class _FileBrowserState extends State<FileBrowser> {
   late var _files = getFiles().toList();
+  late String _path = '';
 
   void _refreshFiles() {
     if (!mounted) return;
@@ -73,8 +75,17 @@ class _FileBrowserState extends State<FileBrowser> {
   }
 
   @override
+  void didUpdateWidget(covariant FileBrowser oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.path != oldWidget.path) {
+      _files = getFiles().toList();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
+      key: ValueKey(_files),
       future: _files,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -83,10 +94,9 @@ class _FileBrowserState extends State<FileBrowser> {
           return FloatingActions.bottomRight(
             actions: [
               if (widget.actions != null)
-                ...widget.actions!(context, widget.path, _refreshFiles),
-              if (FileBrowser.defaultActions != null)
-                ...FileBrowser.defaultActions!(
-                    context, widget.path, _refreshFiles),
+                ...widget.actions!(context, _path, _refreshFiles),
+              if (widget.actions == null && FileBrowser.defaultActions != null)
+                ...FileBrowser.defaultActions!(context, _path, _refreshFiles),
             ],
             child: ListView.builder(
               itemCount: files.length,
@@ -100,7 +110,7 @@ class _FileBrowserState extends State<FileBrowser> {
                   subtitle: isFile ? Text('${file.lengthSync()} bytes') : null,
                   onTap: () {
                     if (!isFile) {
-                      final newDir = join(widget.path, fileName);
+                      final newDir = join(_path, fileName);
                       AnConsole.push(fileName,
                           FileBrowser(path: newDir, actions: widget.actions));
                     } else {
@@ -137,7 +147,8 @@ class _FileBrowserState extends State<FileBrowser> {
   }
 
   Future<String> _getDirPath() async {
-    final dir = Directory(widget.path);
+    _path = await widget.path;
+    final dir = Directory(_path);
     if (!(await dir.exists())) {
       await dir.create(recursive: true);
     }

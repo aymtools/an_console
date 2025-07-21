@@ -84,7 +84,14 @@ class JTreeNode {
 JsonNodes _parsing(dynamic json) {
   if (json is String &&
       (json.trim().startsWith('{') || json.trim().startsWith('['))) {
-    return _parsing(jsonDecode(json));
+    try {
+      return _parsing(jsonDecode(json));
+    } on FormatException catch (e) {
+      print('json decode error: $e');
+      // 如果是无法解析字符串类型的json，直接返回一个根节点
+      final root = JTreeNode.root(type: NodeType.value, value: json);
+      return JsonNodes([root], root);
+    }
   } else if (isPrimitive(json)) {
     final root = JTreeNode.root(type: NodeType.value, value: json);
     return JsonNodes([root], root);
@@ -284,11 +291,19 @@ class _JsonViewState extends State<JsonView> {
 
     if (jsonNodes.nodes.length == 1) {
       /// 只有一个基本类型的数据时直接展示
-      final firstWidget = Text('${jsonNodes.nodes.first.value}');
-
+      final controller = _controllers.addAndGet();
+      final firstWidget = SingleChildScrollView(
+        key: ValueKey(controller),
+        scrollDirection: Axis.horizontal,
+        controller: controller,
+        child: SizedBox(
+          width: defWidth,
+          child: Text('${jsonNodes.nodes.first.value}'),
+        ),
+      );
       return widget.sliver
           ? SliverToBoxAdapter(child: firstWidget)
-          : firstWidget;
+          : SingleChildScrollView(child: firstWidget);
     }
 
     return widget.sliver

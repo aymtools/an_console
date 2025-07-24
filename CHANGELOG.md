@@ -1,6 +1,8 @@
 ## 0.4.0
 
-* Adjust the return value of saveLogToFile to String, and return the specific path where the log is saved.
+* Adjust the return value of saveLogToFile to String, and return the specific path where the log is
+  saved.
+* Added FileBrowser
 
 ## 0.3.0
 

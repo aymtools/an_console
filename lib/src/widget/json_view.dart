@@ -86,8 +86,8 @@ JsonNodes _parsing(dynamic json) {
       (json.trim().startsWith('{') || json.trim().startsWith('['))) {
     try {
       return _parsing(jsonDecode(json));
-    } on FormatException catch (e) {
-      print('json decode error: $e');
+    } on FormatException catch (_) {
+      // print('json decode error: $e');
       // 如果是无法解析字符串类型的json，直接返回一个根节点
       final root = JTreeNode.root(type: NodeType.value, value: json);
       return JsonNodes([root], root);

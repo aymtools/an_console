@@ -25,7 +25,7 @@ class _ConsoleWidget extends StatelessWidget {
               child: MediaQuery(
                 data: mediaQuery.copyWith(
                   padding: mediaQuery.padding.copyWith(top: 0),
-                  textScaleFactor: 1.0,
+                  // textScaleFactor: 1.0,
                   // textScaler: TextScaler.noScaling,
                 ),
                 child: Stack(
@@ -528,7 +528,7 @@ class _ConsoleRouteDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    final backgroundColor = theme.dialogBackgroundColor;
+    final backgroundColor = theme.scaffoldBackgroundColor;
     Widget content = Padding(
       padding: const EdgeInsets.all(24.0),
       child: Center(child: route.content),
@@ -602,7 +602,7 @@ class _ConsoleRouteBottomSheetWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final backgroundColor = theme.bottomSheetTheme.modalBackgroundColor ??
-        theme.dialogBackgroundColor;
+        theme.scaffoldBackgroundColor;
 
     return Stack(
       children: [

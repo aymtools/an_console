@@ -142,7 +142,7 @@ class _FileBrowserState extends State<FileBrowser> {
                 ...FileBrowser.defaultActions!(context, _path, _refreshFiles),
             ],
             child: files.isEmpty
-                ? Center(child: Text('Empty: ${_path}'))
+                ? Center(child: Text('Empty: $_path'))
                 : ListView.builder(
                     itemCount: files.length,
                     itemBuilder: (context, index) {

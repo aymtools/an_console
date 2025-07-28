@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Refactored deprecated APIs.
+
 ## 0.4.0
 
 * Adjust the return value of saveLogToFile to String, and return the specific path where the log is

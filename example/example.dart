@@ -175,6 +175,8 @@ void main() {
   AnConsole.instance.addConsole('Conf', DebugConfig());
   AnConsole.instance.addConsole('DebugDemo', DebugDemo());
 
+  AnConsole.instance.addConsole('files', FileBrowser(path: ''));
+
   runApp(const MyApp());
 
   //放在runApp之后也可以

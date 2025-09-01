@@ -28,69 +28,77 @@ class _ConsoleWidget extends StatelessWidget {
                   // textScaleFactor: 1.0,
                   // textScaler: TextScaler.noScaling,
                 ),
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: ChangeNotifierBuilder<_ConsoleRouteManager>(
-                        changeNotifier: _ConsoleRouteManager._instance,
-                        builder: (_, data, __) {
-                          return ConsoleTheatre(
-                            skipCount: 0,
-                            children: data._routes
-                                .map((e) => e._buildAndCache())
-                                .toList(),
-                          );
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      left: 12,
-                      top: 6,
-                      child: SafeArea(
-                        top: false,
-                        bottom: false,
-                        right: false,
-                        child: GestureDetector(
-                          onTap: () => AnConsole
-                              .instance._overlayController?._willPop
-                              .call(),
-                          behavior: HitTestBehavior.opaque,
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 22,
-                            color: Theme.of(context).iconTheme.color,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 12,
-                      top: 6,
-                      child: SafeArea(
-                        top: false,
-                        bottom: false,
-                        left: false,
-                        child: GestureDetector(
-                          onTap: () => AnConsole
-                              .instance._overlayController?.callClose
-                              .call(),
-                          behavior: HitTestBehavior.opaque,
-                          child: Icon(
-                            Icons.close,
-                            size: 22,
-                            color: Theme.of(context).iconTheme.color,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const _ConsoleToast(),
-                  ],
+                child: Builder(
+                  builder: (context) => AnConsole.instance
+                      ._consolesBuilder(context, const _Consoles()),
                 ),
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Consoles extends StatelessWidget {
+  const _Consoles({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: ChangeNotifierBuilder<_ConsoleRouteManager>(
+            changeNotifier: _ConsoleRouteManager._instance,
+            builder: (_, data, __) {
+              return ConsoleTheatre(
+                skipCount: 0,
+                children: data._routes.map((e) => e._buildAndCache()).toList(),
+              );
+            },
+          ),
+        ),
+        Positioned(
+          left: 12,
+          top: 6,
+          child: SafeArea(
+            top: false,
+            bottom: false,
+            right: false,
+            child: GestureDetector(
+              onTap: () =>
+                  AnConsole.instance._overlayController?._willPop.call(),
+              behavior: HitTestBehavior.opaque,
+              child: Icon(
+                Icons.arrow_back,
+                size: 22,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 12,
+          top: 6,
+          child: SafeArea(
+            top: false,
+            bottom: false,
+            left: false,
+            child: GestureDetector(
+              onTap: () =>
+                  AnConsole.instance._overlayController?.callClose.call(),
+              behavior: HitTestBehavior.opaque,
+              child: Icon(
+                Icons.close,
+                size: 22,
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+          ),
+        ),
+        const _ConsoleToast(),
+      ],
     );
   }
 }
@@ -273,6 +281,12 @@ class _ConsoleRouteManager with ChangeNotifier {
   }
 }
 
+abstract class ConsoleRoute {
+  final String name;
+
+  ConsoleRoute(this.name);
+}
+
 abstract class _ConsoleRoute<T> {
   final Widget? title;
   final Widget content;
@@ -287,7 +301,10 @@ abstract class _ConsoleRoute<T> {
 
   Widget? _cache;
 
-  Widget _buildAndCache() => _cache ??= build();
+  Widget _buildAndCache() {
+    _cache ??= RepaintBoundary(child: build());
+    return _cache!;
+  }
 
   Widget build();
 }
@@ -298,7 +315,7 @@ class _MainConsoleRoute extends _ConsoleRoute {
 
   @override
   Widget build() {
-    return const RepaintBoundary(child: _ConsoleRouteMainWidget());
+    return _ConsoleRouteMainWidget();
   }
 }
 
@@ -307,7 +324,7 @@ class _ConsoleRoutePage<T> extends _ConsoleRoute<T> {
 
   @override
   Widget build() {
-    return RepaintBoundary(child: _ConsoleRoutePageWidget(route: this));
+    return _ConsoleRoutePageWidget(route: this);
   }
 }
 
@@ -321,7 +338,7 @@ class _ConsoleRouteDialog<T> extends _ConsoleRoute<T> {
 
   @override
   Widget build() {
-    return RepaintBoundary(child: _ConsoleRouteDialogWidget(route: this));
+    return _ConsoleRouteDialogWidget(route: this);
   }
 }
 
@@ -333,7 +350,7 @@ class _ConsoleRouteBottomSheet<T> extends _ConsoleRoute<T> {
 
   @override
   Widget build() {
-    return RepaintBoundary(child: _ConsoleRouteBottomSheetWidget(route: this));
+    return _ConsoleRouteBottomSheetWidget(route: this);
   }
 }
 
@@ -359,7 +376,9 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
 
     final consoles = AnConsole.instance._routes;
 
-    _lastTabIndex = consoles.length >= _lastTabIndex ? 0 : _lastTabIndex;
+    if (_lastTabIndex > 0) {
+      _lastTabIndex = consoles.length >= _lastTabIndex ? 0 : _lastTabIndex;
+    }
 
     _controller = TabController(
         length: consoles.length,

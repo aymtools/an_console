@@ -162,6 +162,22 @@ class AnConsole {
   static void _assert() {
     assert(instance.isEnable && instance._navigator != null);
   }
+
+  /// 用来构建控制台的widget 可以切换theme等内容
+  Widget Function(BuildContext context, Widget child) _consolesBuilder =
+      (context, child) => child;
+
+  /// 用来构建控制台的widget 可以设置 theme等内容
+  set consolesBuilder(
+          Widget Function(BuildContext context, Widget child) builder) =>
+      _consolesBuilder = builder;
+
+  Widget Function(BuildContext context, Widget child) _consoleRouteBuilder =
+      (context, child) => child;
+
+  set consoleRouteBuilder(
+          Widget Function(BuildContext context, Widget child) builder) =>
+      _consoleRouteBuilder = builder;
 }
 
 /// 对控制台的overlay的控制器

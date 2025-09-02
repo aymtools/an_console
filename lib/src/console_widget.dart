@@ -415,8 +415,18 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
             controller: _controller,
             physics: const NeverScrollableScrollPhysics(),
             children: consoles
-                .map((e) =>
-                    _KeepAliveWrapper(child: RepaintBoundary(child: e.content)))
+                .mapIndexed(
+                  (index, e) => _KeepAliveWrapper(
+                    child: RepaintBoundary(
+                      child: Builder(
+                        builder: (context) {
+                          return AnConsole.instance
+                              ._consoleRouteBuilder(context, index, e.content);
+                        },
+                      ),
+                    ),
+                  ),
+                )
                 .toList(growable: false),
           );
     _mainRoute = _ConsoleRoutePage(title: title, content: content);

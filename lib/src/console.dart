@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'console_theater.dart';
@@ -172,11 +173,13 @@ class AnConsole {
           Widget Function(BuildContext context, Widget child) builder) =>
       _consolesBuilder = builder;
 
-  Widget Function(BuildContext context, Widget child) _consoleRouteBuilder =
-      (context, child) => child;
+  Widget Function(BuildContext context, int index, Widget child)
+      _consoleRouteBuilder = (context, index, child) => child;
 
+  /// index >=0 时为在主页位置 -1为正常的路由中
   set consoleRouteBuilder(
-          Widget Function(BuildContext context, Widget child) builder) =>
+          Widget Function(BuildContext context, int index, Widget child)
+              builder) =>
       _consoleRouteBuilder = builder;
 }
 

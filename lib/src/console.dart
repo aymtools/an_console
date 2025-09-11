@@ -40,15 +40,15 @@ class AnConsole {
   //   return _navigatorObserver;
   // }
 
-  final List<_ConsoleRoute> _routes = [];
+  final List<ConsoleRoute> _routes = [];
 
   NavigatorState? _navigator;
 
   /// 新增一个自定义控制台
   void addConsole(String title, Widget content) {
     _hookOnBackPressed();
-    final route =
-        _ConsoleRoutePage(title: Text(title, maxLines: 1), content: content);
+    final route = _ConsoleRoutePage(
+        name: title, title: Text(title, maxLines: 1), content: content);
     _routes.add(route);
   }
 
@@ -173,12 +173,17 @@ class AnConsole {
           Widget Function(BuildContext context, Widget child) builder) =>
       _consolesBuilder = builder;
 
-  Widget Function(BuildContext context, int index, Widget child)
-      _consoleRouteBuilder = (context, index, child) => child;
+  Widget Function(BuildContext context, int index, ConsoleRoute route)
+      _consoleRouteBuilder = (context, index, route) => route.content;
+
+  /// 路由发生变动时的通知
+  void addRouteHistoryChangeListener(void Function() listener) {
+    _ConsoleRouteManager._instance.addListener(listener);
+  }
 
   /// index >=0 时为在主页位置 -1为正常的路由中
   set consoleRouteBuilder(
-          Widget Function(BuildContext context, int index, Widget child)
+          Widget Function(BuildContext context, int index, ConsoleRoute route)
               builder) =>
       _consoleRouteBuilder = builder;
 }

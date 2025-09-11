@@ -138,8 +138,8 @@ class _ConsoleRouteManager with ChangeNotifier {
   }
 
   Future<T?> push<T>(String title, Widget content) {
-    final route =
-        _ConsoleRoutePage<T>(title: Text(title, maxLines: 1), content: content);
+    final route = _ConsoleRoutePage<T>(
+        name: title, title: Text(title, maxLines: 1), content: content);
     addRoute(route);
     return route.completer.future;
   }
@@ -168,6 +168,7 @@ class _ConsoleRouteManager with ChangeNotifier {
 
     late final _ConsoleRouteDialog<bool> route;
     route = _ConsoleRouteDialog(
+        name: title ?? '',
         title: title == null || title.isEmpty ? null : Text(title, maxLines: 1),
         content: Text(content),
         actions: <TextButton>[
@@ -236,6 +237,7 @@ class _ConsoleRouteManager with ChangeNotifier {
     }
 
     route = _ConsoleRouteBottomSheet(
+        name: title ?? '',
         title: title == null || title.isEmpty ? null : Text(title, maxLines: 1),
         content: Expanded(
           child: content,
@@ -262,6 +264,7 @@ class _ConsoleRouteManager with ChangeNotifier {
     assert(options.isNotEmpty);
     late final _ConsoleRouteBottomSheet<List<T>> route;
     route = _ConsoleRouteBottomSheet(
+        name: title ?? '',
         title: title == null || title.isEmpty ? null : Text(title, maxLines: 1),
         content: _OptionMultiSelect<T>(
           options: options,
@@ -283,20 +286,24 @@ class _ConsoleRouteManager with ChangeNotifier {
 
 abstract class ConsoleRoute {
   final String name;
+  final bool opaque;
 
-  ConsoleRoute(this.name);
+  ConsoleRoute({this.name = '', required this.opaque});
+
+  Widget get content;
 }
 
-abstract class _ConsoleRoute<T> {
+abstract class _ConsoleRoute<T> extends ConsoleRoute {
   final Widget? title;
+  @override
   final Widget content;
-  final bool opaque;
   final Completer<T?> completer = Completer();
 
   _ConsoleRoute({
+    super.name,
     required this.title,
     required this.content,
-    this.opaque = false,
+    required super.opaque,
   });
 
   Widget? _cache;
@@ -311,7 +318,11 @@ abstract class _ConsoleRoute<T> {
 
 class _MainConsoleRoute extends _ConsoleRoute {
   _MainConsoleRoute()
-      : super(title: const SizedBox.shrink(), content: const SizedBox.shrink());
+      : super(
+            name: '',
+            title: const SizedBox.shrink(),
+            content: const SizedBox.shrink(),
+            opaque: false);
 
   @override
   Widget build() {
@@ -320,7 +331,11 @@ class _MainConsoleRoute extends _ConsoleRoute {
 }
 
 class _ConsoleRoutePage<T> extends _ConsoleRoute<T> {
-  _ConsoleRoutePage({required Widget super.title, required super.content});
+  _ConsoleRoutePage({
+    super.name,
+    required Widget super.title,
+    required super.content,
+  }) : super(opaque: false);
 
   @override
   Widget build() {
@@ -328,13 +343,60 @@ class _ConsoleRoutePage<T> extends _ConsoleRoute<T> {
   }
 }
 
+Widget _dialogContent(Widget content, route) {
+  return Builder(
+    builder: (context) {
+      Widget content = Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Center(child: route.content),
+      );
+      if (route.actions.isNotEmpty) {
+        content = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+                constraints: const BoxConstraints(
+                  minHeight: 120,
+                ),
+                child: content),
+            Container(
+              height: 0.5,
+              color: Theme.of(context).dividerColor,
+            ),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: _childList(
+                      route.actions.map((e) => Expanded(child: e)).toList(),
+                      Container(
+                        width: 0.5,
+                        color: Theme.of(context).dividerColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+      return content;
+    },
+  );
+}
+
 class _ConsoleRouteDialog<T> extends _ConsoleRoute<T> {
   final List<TextButton> actions;
 
-  _ConsoleRouteDialog(
-      {super.title,
-      required super.content,
-      this.actions = const <TextButton>[]});
+  _ConsoleRouteDialog({super.name,
+    super.title,
+    required Widget content,
+    this.actions = const <TextButton>[]})
+      : super(opaque: true, content: _dialogContent(content, actions));
 
   @override
   Widget build() {
@@ -346,7 +408,8 @@ class _ConsoleRouteBottomSheet<T> extends _ConsoleRoute<T> {
   void Function()? onDismiss;
 
   _ConsoleRouteBottomSheet(
-      {super.title, required super.content, this.onDismiss});
+      {super.name, super.title, required super.content, this.onDismiss})
+      : super(opaque: true);
 
   @override
   Widget build() {
@@ -399,7 +462,7 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
               style: TextStyle(
                   color: controller.index == index ? Colors.blue : null),
               maxLines: 1,
-              child: consoles[index].title!,
+              child: (consoles[index] as _ConsoleRoute).title!,
             ),
           ),
         ),
@@ -421,7 +484,7 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
                       child: Builder(
                         builder: (context) {
                           return AnConsole.instance
-                              ._consoleRouteBuilder(context, index, e.content);
+                              ._consoleRouteBuilder(context, index, e);
                         },
                       ),
                     ),
@@ -502,8 +565,6 @@ class _BaseRouteDialogWidget extends StatelessWidget {
 
     final titleStyle = theme.dialogTheme.titleTextStyle ?? defaultTitleStyle;
 
-    final contentStyle =
-        theme.dialogTheme.contentTextStyle ?? theme.textTheme.bodyMedium;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -529,9 +590,16 @@ class _BaseRouteDialogWidget extends StatelessWidget {
               ),
             ),
           ),
-        DefaultTextStyle.merge(
-          style: contentStyle,
-          child: content,
+        Builder(
+          builder: (context) {
+            final theme = Theme.of(context);
+            final contentStyle = theme.dialogTheme.contentTextStyle ??
+                theme.textTheme.bodyMedium;
+            return DefaultTextStyle.merge(
+              style: contentStyle,
+              child: content,
+            );
+          },
         ),
       ],
     );
@@ -558,44 +626,6 @@ class _ConsoleRouteDialogWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final backgroundColor = theme.scaffoldBackgroundColor;
-    Widget content = Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Center(child: route.content),
-    );
-    if (route.actions.isNotEmpty) {
-      content = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              constraints: const BoxConstraints(
-                minHeight: 120,
-              ),
-              child: content),
-          Container(
-            height: 0.5,
-            color: Theme.of(context).dividerColor,
-          ),
-          SafeArea(
-            top: false,
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: IntrinsicHeight(
-                child: Row(
-                  children: _childList(
-                    route.actions.map((e) => Expanded(child: e)).toList(),
-                    Container(
-                      width: 0.5,
-                      color: Theme.of(context).dividerColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
 
     return Stack(
       children: [
@@ -613,7 +643,11 @@ class _ConsoleRouteDialogWidget extends StatelessWidget {
               maxHeight: (size.height * 4 / 5) - 48,
             ),
             color: backgroundColor,
-            child: _BaseRouteDialogWidget(title: route.title, content: content),
+            child: _BaseRouteDialogWidget(
+                title: route.title,
+                content: Builder(
+                    builder: (context) => AnConsole.instance
+                        ._consoleRouteBuilder(context, -1, route))),
           ),
         ),
       ],
@@ -650,7 +684,11 @@ class _ConsoleRouteBottomSheetWidget extends StatelessWidget {
             width: double.infinity,
             color: backgroundColor,
             child: _BaseRouteDialogWidget(
-                title: route.title, content: route.content),
+              title: route.title,
+              content: Builder(
+                  builder: (context) => AnConsole.instance
+                      ._consoleRouteBuilder(context, -1, route)),
+            ),
           ),
         ),
       ],

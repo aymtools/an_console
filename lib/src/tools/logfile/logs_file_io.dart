@@ -17,15 +17,15 @@ extension AnConsoleLogFileSaver on AnConsole {
       {String? content,
       String? fileNamePrefix,
       Future<void> Function(LogWriter writer)? customWrite}) async {
-    final _logFiles = logFilesBasePath;
-    assert(_logFiles.isNotEmpty, 'logFilesBasePath must init');
-    if (_logFiles.isEmpty) {
+    final logFiles = logFilesBasePath;
+    assert(logFiles.isNotEmpty, 'logFilesBasePath must init');
+    if (logFiles.isEmpty) {
       return '';
     }
 
     var logPath =
-        '$_logFiles/$logType/${fileNamePrefix == null ? '' : '$fileNamePrefix-'}${_fileLogDateFormat.format(DateTime.now())}.txt';
-    logPath = join(_logFiles, logType);
+        '$logFiles/$logType/${fileNamePrefix == null ? '' : '$fileNamePrefix-'}${_fileLogDateFormat.format(DateTime.now())}.txt';
+    logPath = join(logFiles, logType);
     if (fileNamePrefix?.isNotEmpty == true) {
       logPath = join(logPath,
           '$fileNamePrefix-${_fileLogDateFormat.format(DateTime.now())}.txt');

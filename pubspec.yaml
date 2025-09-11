@@ -25,6 +25,6 @@ dependencies:
   linked_scroll_controller: ^0.2.0
 
 dev_dependencies:
-  flutter_lints: ^5.0.0
+  flutter_lints: any
 
 flutter:

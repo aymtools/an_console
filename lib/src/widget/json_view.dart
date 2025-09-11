@@ -187,8 +187,8 @@ bool isPrimitive(dynamic value) {
   return value is double || value is int || value is String || value is bool;
 }
 
-Future<JsonNodes> _defJsonParser(
-        json, JsonNodes Function(dynamic json) parsing) =>
+Future<JsonNodes> _defJsonParser(dynamic json,
+    JsonNodes Function(dynamic json) parsing) =>
     compute(parsing, json);
 
 /// 构建一个json展示的widget
@@ -244,7 +244,7 @@ class _JsonViewState extends State<JsonView> {
     }
   }
 
-  _parseJson(dynamic jsonStr) {
+  void _parseJson(dynamic jsonStr) {
     if (jsonStr == null || jsonStr == this.jsonStr) return;
     this.jsonStr = jsonStr;
     jsonNodes = JsonView.jsonParser(jsonStr, _parsing);

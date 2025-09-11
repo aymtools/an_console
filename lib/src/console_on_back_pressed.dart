@@ -31,7 +31,7 @@ class _OnBackPressedDispatcher with WidgetsBindingObserver {
 
 _OnBackPressedDispatcher? _hookedOnBackPressedDispatcher;
 
-_hookOnBackPressed() {
+void _hookOnBackPressed() {
   if (_hookedOnBackPressedDispatcher != null) return;
   try {
     final dispatcher = _OnBackPressedDispatcher();

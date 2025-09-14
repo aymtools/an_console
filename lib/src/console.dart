@@ -10,6 +10,7 @@ import 'widget/draggable.dart';
 
 part 'console_floating.dart';
 part 'console_on_back_pressed.dart';
+part 'console_route.dart';
 part 'console_toast.dart';
 part 'console_widget.dart';
 
@@ -176,9 +177,17 @@ class AnConsole {
   Widget Function(BuildContext context, int index, ConsoleRoute route)
       _consoleRouteBuilder = (context, index, route) => route.content;
 
+  void Function(List<ConsoleRoute>)? _routeHistoryChangeListener;
+
   /// 路由发生变动时的通知
-  void addRouteHistoryChangeListener(void Function() listener) {
-    _ConsoleRouteManager._instance.addListener(listener);
+  set routeHistoryChangeListener(void Function(List<ConsoleRoute>) listener) {
+    if (_routeHistoryChangeListener == null) {
+      _ConsoleRouteManager._instance.addListener(() {
+        _routeHistoryChangeListener
+            ?.call([..._ConsoleRouteManager._instance._routes]);
+      });
+    }
+    _routeHistoryChangeListener = listener;
   }
 
   /// index >=0 时为在主页位置 -1为正常的路由中

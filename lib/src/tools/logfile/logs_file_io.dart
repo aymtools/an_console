@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 /// 转储文件的日期格式
 final _fileLogDateFormat = DateFormat('MM-dd_HH_mm_ss_S');
 
-extension AnConsoleLogFileSaver on AnConsole {
+extension AnConsoleLogFileSaverExt on AnConsole {
   /// 将指定类型的的日志内容写入到日志文件
   Future<String> saveLogToFile(String logType,
       {String? content,

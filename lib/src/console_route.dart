@@ -25,6 +25,8 @@ class _ConsoleRouteManager with ChangeNotifier {
     notifyListeners();
   }
 
+  void _notify() => notifyListeners();
+
   Future<bool> _willPop() async {
     if (_routes.length > 1) {
       _routes.removeLast();

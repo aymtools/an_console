@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Allow custom wrapper
+
 ## 0.4.1
 
 * Refactored deprecated APIs.

@@ -42,7 +42,7 @@ class _ConsoleWidget extends StatelessWidget {
 }
 
 class _Consoles extends StatelessWidget {
-  const _Consoles({super.key});
+  const _Consoles();
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +169,7 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
     _isNotFirstBuild = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        // ignore: invalid_use_of_protected_member
         _ConsoleRouteManager._instance.notifyListeners();
       }
     });
@@ -338,7 +339,7 @@ class _ConsoleRouteDialogContent extends StatelessWidget {
   final List<Widget> actions;
 
   const _ConsoleRouteDialogContent(
-      {super.key, required this.content, required this.actions});
+      {required this.content, required this.actions});
 
   @override
   Widget build(BuildContext context) {

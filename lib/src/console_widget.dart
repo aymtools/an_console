@@ -426,9 +426,9 @@ class _ConsoleRouteBottomSheetWidget extends StatelessWidget {
 }
 
 class _OptionMultiSelect<T> extends StatefulWidget {
-  final List<T> options;
+  final Iterable<T> options;
   final String Function(T option) displayToStr;
-  final List<T> selected;
+  final Iterable<T> selected;
   final String confirmLabel;
   final void Function(List<T> selected) confirm;
 
@@ -457,7 +457,7 @@ class _OptionMultiSelectState<T> extends State<_OptionMultiSelect<T>> {
             child: ListView.builder(
               itemCount: widget.options.length,
               itemBuilder: (_, index) {
-                final data = widget.options[index];
+                final data = widget.options.elementAt(index);
                 return ListTile(
                   onTap: () {
                     if (selected.contains(data)) {

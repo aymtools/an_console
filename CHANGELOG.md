@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Added support for customizing dialogs in the console.
+
 ## 1.0.0
 
 * Allow custom wrapper

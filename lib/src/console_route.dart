@@ -53,68 +53,80 @@ class _ConsoleRouteManager with ChangeNotifier {
     }
   }
 
-  Future<bool> showConfirm({
+  /// 自定义对话框
+  /// * [onTapOk] 返回值为[null] 时表示只需要移除route 不反悔任何内容
+  Future<T> showCustomDialog<T>({
     String? title,
-    required String content,
+    required Widget content,
     String? okLabel,
+    T? Function()? onTapOk,
     String? cancelLabel,
+    T? Function()? onTapCancel,
   }) {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(AnConsole.instance._navigator!.context);
-
-    okLabel ??= localizations.okButtonLabel;
-    cancelLabel ??= localizations.cancelButtonLabel;
-
-    late final _ConsoleRouteDialog<bool> route;
+    late final _ConsoleRouteDialog<T> route;
     route = _ConsoleRouteDialog(
         name: title ?? '',
         title: title == null || title.isEmpty ? null : Text(title, maxLines: 1),
-        content: Text(content),
+        content: content,
         actions: <TextButton>[
-          TextButton(
-            onPressed: () {
-              removeRoute(route);
-              route.completer.complete(false);
-            },
-            child: Text(cancelLabel),
-          ),
-          TextButton(
-            onPressed: () {
-              removeRoute(route);
-              route.completer.complete(true);
-            },
-            child: Text(okLabel),
-          ),
+          if (cancelLabel != null)
+            TextButton(
+              onPressed: () {
+                T? r = onTapCancel?.call();
+                removeRoute(route);
+                if (r != null) {
+                  route.completer.complete(r);
+                }
+              },
+              child: Text(cancelLabel),
+            ),
+          if (okLabel != null)
+            TextButton(
+              onPressed: () {
+                T? r = onTapOk?.call();
+                removeRoute(route);
+                if (r != null) {
+                  route.completer.complete(r);
+                }
+              },
+              child: Text(okLabel),
+            ),
         ]);
     addRoute(route);
-    return route.completer.future.then((value) => value ?? false);
+    return route.completer.future.then((value) => value as T);
   }
 
-  Future<T> showOptionSelect<T>({
+  Future<({int index, T option})> showOptionSelect<T>({
     String? title,
-    required List<T> options,
-    required String Function(T option) displayToStr,
+    required Iterable<T> options,
+    required String Function(int index, T option) displayToStr,
     T? selected,
+    int? selectedIndex,
     String? cancel,
   }) {
     assert(options.isNotEmpty);
 
-    late final _ConsoleRouteBottomSheet<T> route;
+    late final _ConsoleRouteBottomSheet<({int index, T option})> route;
     Widget content = ListView.builder(
       itemCount: options.length,
-      itemBuilder: (_, index) => ListTile(
-        onTap: () {
-          removeRoute(route);
-          route.completer.complete(options[index]);
-        },
-        leading: Icon(
-          options[index] == selected
-              ? Icons.check_box_outlined
-              : Icons.check_box_outline_blank,
-          color: options[index] == selected ? Colors.blue : null,
-        ),
-        title: Text(displayToStr(options[index])),
-      ),
+      itemBuilder: (_, index) {
+        final op = options.elementAt(index);
+
+        return ListTile(
+          onTap: () {
+            removeRoute(route);
+            route.completer.complete((index: index, option: op));
+          },
+          leading: Icon(
+            index == selectedIndex || op == selected
+                ? Icons.check_box_outlined
+                : Icons.check_box_outline_blank,
+            color:
+                index == selectedIndex || op == selected ? Colors.blue : null,
+          ),
+          title: Text(displayToStr(index, op)),
+        );
+      },
     );
     if (cancel?.isNotEmpty == true) {
       content = Column(
@@ -145,21 +157,17 @@ class _ConsoleRouteManager with ChangeNotifier {
           removeRoute(route);
         });
     addRoute(route);
-    return route.completer.future.then<T>((value) => value!);
+    return route.completer.future
+        .then<({int index, T option})>((value) => value!);
   }
 
   Future<List<T>> showOptionMultiSelect<T>({
     String? title,
-    required List<T> options,
+    required Iterable<T> options,
     required String Function(T option) displayToStr,
-    List<T>? selected,
-    String? confirmLabel,
+    Iterable<T>? selected,
+    required String confirmLabel,
   }) {
-    if (confirmLabel == null || confirmLabel.isEmpty) {
-      final MaterialLocalizations localizations =
-          MaterialLocalizations.of(AnConsole.instance._navigator!.context);
-      confirmLabel = localizations.okButtonLabel;
-    }
     assert(options.isNotEmpty);
     late final _ConsoleRouteBottomSheet<List<T>> route;
     route = _ConsoleRouteBottomSheet(
@@ -179,7 +187,8 @@ class _ConsoleRouteManager with ChangeNotifier {
           removeRoute(route);
         });
     addRoute(route);
-    return route.completer.future.then((value) => value ?? selected ?? <T>[]);
+    return route.completer.future
+        .then((value) => value ?? selected?.toList() ?? <T>[]);
   }
 }
 

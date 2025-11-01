@@ -106,6 +106,31 @@ class AnConsole {
     _ConsoleRouteManager._instance.pop(result);
   }
 
+  /// 展示一个toast消息 不影响应用的toast 库中独立的
+  static void showToast(String message) {
+    _assert();
+    _ConsoleToastQueue.instance.showToast(message);
+  }
+
+  /// 展示一个自定义对话框 不影响路由内容 库中独立的
+  static Future<T> showCustomDialog<T>({
+    String? title,
+    required Widget content,
+    String? okLabel,
+    T? Function()? onTapOk,
+    String? cancelLabel,
+    T? Function()? onTapCancel,
+  }) {
+    _assert();
+    return _ConsoleRouteManager._instance.showCustomDialog<T>(
+        title: title,
+        content: content,
+        okLabel: okLabel,
+        onTapOk: onTapOk,
+        cancelLabel: cancelLabel,
+        onTapCancel: onTapCancel);
+  }
+
   /// 展示一个对话框 不影响路由内容 库中独立的
   static Future<bool> showConfirm({
     String? title,
@@ -114,42 +139,41 @@ class AnConsole {
     String? cancelLabel,
   }) {
     _assert();
-    return _ConsoleRouteManager._instance.showConfirm(
-        title: title,
-        content: content,
-        okLabel: okLabel,
-        cancelLabel: cancelLabel);
-  }
 
-  /// 展示一个toast消息 不影响应用的toast 库中独立的
-  static void showToast(String message) {
-    _assert();
-    _ConsoleToastQueue.instance.showToast(message);
+    return showCustomDialog<bool>(
+        title: title,
+        content: Text(content),
+        okLabel: _getOkLabel(okLabel),
+        onTapOk: () => true,
+        cancelLabel: _getCancelLabel(cancelLabel),
+        onTapCancel: () => false);
   }
 
   /// 展示一个列表选择器  不影响路由内容 库中独立的
   static Future<T> showOptionSelect<T>({
     String? title,
-    required List<T> options,
+    required Iterable<T> options,
     required String Function(T option) displayToStr,
     T? selected,
     String? cancel,
   }) {
     _assert();
-    return _ConsoleRouteManager._instance.showOptionSelect(
-        title: title,
-        options: options,
-        displayToStr: displayToStr,
-        selected: selected,
-        cancel: cancel);
+    return _ConsoleRouteManager._instance
+        .showOptionSelect(
+            title: title,
+            options: options,
+            displayToStr: (_, option) => displayToStr(option),
+            selected: selected,
+            cancel: cancel)
+        .then((v) => v.option);
   }
 
   /// 展示一个多选的列表选择器  不影响路由内容 库中独立的
   static Future<List<T>> showOptionMultiSelect<T>({
     String? title,
-    required List<T> options,
+    required Iterable<T> options,
     required String Function(T option) displayToStr,
-    List<T>? selected,
+    Iterable<T>? selected,
     String? confirmLabel,
   }) {
     _assert();
@@ -158,7 +182,91 @@ class AnConsole {
         options: options,
         displayToStr: displayToStr,
         selected: selected,
-        confirmLabel: confirmLabel);
+        confirmLabel: _getOkLabel(confirmLabel));
+  }
+
+  /// 展示一个可输入的对话框 不影响路由内容 库中独立的 注意会拉起键盘影响布局
+  static Future<String> showInputDialog({
+    String? title,
+    String? initialValue,
+    String? hintText,
+    String? okLabel,
+    int? minLines,
+    int? maxLines,
+    int? maxLength,
+    TextInputType? keyboardType,
+  }) {
+    _assert();
+    final controller = TextEditingController(text: initialValue);
+    final content = TextField(
+      controller: controller,
+      minLines: minLines,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(hintText: hintText),
+    );
+
+    return showCustomDialog<String>(
+      title: title,
+      content: content,
+      okLabel: _getOkLabel(okLabel),
+      onTapOk: () => controller.text,
+    );
+  }
+
+  /// 展示一个列表选择器  不影响路由内容 库中独立的
+  static Future<({int index, T option})> showSelectOption<T>({
+    String? title,
+    required Iterable<T> options,
+    required String Function(int index, T option) displayToStr,
+    T? selected,
+    int? selectedIndex,
+    String? cancel,
+  }) async {
+    _assert();
+    return _ConsoleRouteManager._instance.showOptionSelect(
+        title: title,
+        options: options,
+        displayToStr: displayToStr,
+        selected: selected,
+        selectedIndex: selectedIndex,
+        cancel: cancel);
+  }
+
+  // /// 展示一个多选的列表选择器  不影响路由内容 库中独立的
+  // static Future<List<({int index, T option})>> showSelectMultiOption<T>({
+  //   String? title,
+  //   required Iterable<T> options,
+  //   required String Function(T option) displayToStr,
+  //   Iterable<T>? selected,
+  //   String? confirmLabel,
+  // }) {
+  //   _assert();
+  //   return _ConsoleRouteManager._instance.showOptionMultiSelect(
+  //       title: title,
+  //       options: options,
+  //       displayToStr: displayToStr,
+  //       selected: selected,
+  //       confirmLabel: _getOkLabel(confirmLabel));
+  // }
+
+  static String _getOkLabel(String? okLabel) {
+    if (okLabel == null || okLabel.isEmpty) {
+      final MaterialLocalizations localizations =
+          MaterialLocalizations.of(instance._navigator!.context);
+      okLabel = localizations.okButtonLabel;
+    }
+    return okLabel;
+  }
+
+  static String _getCancelLabel(String? cancelLabel) {
+    if (cancelLabel == null || cancelLabel.isEmpty) {
+      final MaterialLocalizations localizations =
+          MaterialLocalizations.of(instance._navigator!.context);
+      cancelLabel = localizations.cancelButtonLabel;
+    }
+    return cancelLabel;
   }
 
   static void _assert() {

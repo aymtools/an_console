@@ -200,6 +200,28 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
       itemCount: consoles.length,
     );
 
+    if (consoles.length > 5) {
+      title = Row(
+        children: [
+          Expanded(child: title),
+          Padding(
+            padding: EdgeInsets.only(left: 4),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () async {
+                final select = await AnConsole.showOptionSelect(
+                    options: consoles,
+                    displayToStr: (r) => r.name,
+                    selected: consoles[controller.index]);
+                controller.index = consoles.indexOf(select);
+              },
+              child: Icon(Icons.arrow_drop_down),
+            ),
+          ),
+        ],
+      );
+    }
+
     Widget content = consoles.isEmpty
         ? Container()
         : TabBarView(

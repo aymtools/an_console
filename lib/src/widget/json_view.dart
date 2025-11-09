@@ -187,8 +187,8 @@ bool isPrimitive(dynamic value) {
   return value is double || value is int || value is String || value is bool;
 }
 
-Future<JsonNodes> _defJsonParser(dynamic json,
-    JsonNodes Function(dynamic json) parsing) =>
+Future<JsonNodes> _defJsonParser(
+        dynamic json, JsonNodes Function(dynamic json) parsing) =>
     compute(parsing, json);
 
 /// 构建一个json展示的widget

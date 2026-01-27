@@ -1,22 +1,17 @@
 # .github/workflows/publish.yml
+# - 预发布 vX.Y.Z-(pre/dev/beta/rc).X 只检查不发布
+#- 正式发布 vX.Y.Z 会执行所有检查并使用OIDC的方式发布
 name: Publish to pub.dev
 
 on:
   push:
     tags:
-      # must align with the tag-pattern configured on pub.dev, often just replace
-      # {{version}} with [0-9]+.[0-9]+.[0-9]+
-      - 'v[0-9]+.[0-9]+.[0-9]+' # tag-pattern on pub.dev: 'v{{version}}'
-    # If you prefer tags like '1.2.3', without the 'v' prefix, then use:
-    # - '[0-9]+.[0-9]+.[0-9]+' # tag-pattern on pub.dev: '{{version}}'
-    # If your repository contains multiple packages consider a pattern like:
-    # - 'my_package_name-v[0-9]+.[0-9]+.[0-9]+'
+      - 'v*.*.*'
+      - 'v*.*.*-*.*'
 
-# Publish using the reusable workflow from dart-lang.
 jobs:
   publish:
     permissions:
-      id-token: write # Required for authentication using OIDC
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    # with:
-    #   working-directory: path/to/package/within/repository
+      contents: read
+      id-token: write
+    uses: aymtools/flutter-ci/.github/workflows/flutter-publish.yml@v3

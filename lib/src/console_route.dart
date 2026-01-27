@@ -293,7 +293,7 @@ class _MainConsoleRoute extends _ConsoleRoute {
     final consoles = AnConsole.instance._routes;
 
     if (_lastTabIndex > 0) {
-      _lastTabIndex = consoles.length >= _lastTabIndex ? 0 : _lastTabIndex;
+      _lastTabIndex = _lastTabIndex >= consoles.length ? 0 : _lastTabIndex;
     }
 
     return DefaultTabController(

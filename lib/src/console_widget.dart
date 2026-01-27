@@ -182,7 +182,10 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
     Widget title = ListView.separated(
       scrollDirection: Axis.horizontal,
       itemBuilder: (_, index) => GestureDetector(
-        onTap: () => controller.index = index,
+        onTap: () {
+          controller.index = index;
+          _lastTabIndex = index;
+        },
         child: Center(
           child: ChangeNotifierBuilder<TabController>(
             changeNotifier: controller,
@@ -209,11 +212,13 @@ class _ConsoleRouteMainWidgetState extends State<_ConsoleRouteMainWidget>
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () async {
-                final select = await AnConsole.showOptionSelect(
+                final select = await AnConsole.showSelectOption(
                     options: consoles,
-                    displayToStr: (r) => r.name,
+                    displayToStr: (_, r) => r.name,
                     selected: consoles[controller.index]);
-                controller.index = consoles.indexOf(select);
+                final index = select.index;
+                controller.index = index;
+                _lastTabIndex = index;
               },
               child: Icon(Icons.arrow_drop_down),
             ),

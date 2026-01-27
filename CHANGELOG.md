@@ -1,6 +1,7 @@
 ## 1.2.0
 
-*
+* Supports remembering the index on the homepage.
+
 ## 1.1.0
 
 * Added support for customizing dialogs in the console.

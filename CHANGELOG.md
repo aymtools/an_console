@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Upgrading Dependencies.
+
 ## 1.2.0
 
 * Supports remembering the index on the homepage.

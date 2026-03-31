@@ -17,7 +17,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: any
+  intl: ">=0.17.0 <1.0.0" # 允许从 0.17.0 开始的所有 0.x 版本
   shared_preferences: ^2.2.1
   collection: ^1.16.0
   path: ^1.8.3

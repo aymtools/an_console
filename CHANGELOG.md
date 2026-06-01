@@ -1,3 +1,7 @@
+## 1.3.0
+
+* EventManagerConsole: Add filtering, clearing, and saving capabilities
+
 ## 1.2.1
 
 * Upgrading Dependencies.

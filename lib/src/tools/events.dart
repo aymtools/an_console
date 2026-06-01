@@ -30,8 +30,6 @@ class EventManager<E> with ChangeNotifier {
   }
 }
 
-
-
 final _defaultFilterNotifier = ValueNotifier((_) => true);
 
 ValueNotifier<bool Function(T)> _filterNotifier<T>(
@@ -44,6 +42,7 @@ ValueNotifier<bool Function(T)> _filterNotifier<T>(
     return _defaultFilterNotifier;
   }
 }
+
 /// 对定长 的事件管理器的默认控制台实现
 class EventManagerConsole<T> extends StatefulWidget {
   final EventManager<T> manager;
@@ -58,7 +57,7 @@ class EventManagerConsole<T> extends StatefulWidget {
   final String? saveLogFileType;
   final FutureOr<String> Function(T event)? saveLogConvert;
 
-   EventManagerConsole({
+  EventManagerConsole({
     super.key,
     required this.manager,
     required this.eventBuilder,
@@ -71,17 +70,18 @@ class EventManagerConsole<T> extends StatefulWidget {
     this.showSave = false,
     this.saveLogFileType,
     this.saveLogConvert,
-  })  : multipleWith = multipleWith == null || multipleWith < 1 ? 1 : multipleWith,
+  })  : multipleWith =
+            multipleWith == null || multipleWith < 1 ? 1 : multipleWith,
         eventSeparatorPadding = eventSeparatorPadding ?? 12,
         filterNotifier = _filterNotifier(filter, filterNotifier);
-
 
   @override
   State<EventManagerConsole<T>> createState() => _EventManagerConsoleState<T>();
 }
 
 class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
-  late final LinkedScrollControllerGroup _controllers = LinkedScrollControllerGroup();
+  late final LinkedScrollControllerGroup _controllers =
+      LinkedScrollControllerGroup();
 
   void _changer() {
     try {
@@ -118,7 +118,9 @@ class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final width = widget.multipleWith <= 1 ? 0.0 : MediaQuery.of(context).size.width * widget.multipleWith;
+    final width = widget.multipleWith <= 1
+        ? 0.0
+        : MediaQuery.of(context).size.width * widget.multipleWith;
     final filter = widget.filterNotifier.value;
     final data = widget.manager.buffers.where(filter);
 
@@ -129,15 +131,16 @@ class _EventManagerConsoleState<T> extends State<EventManagerConsole<T>> {
         return width == 0.0
             ? widget.eventBuilder(context, index, item)
             : SingleChildScrollView(
-          controller: _controllers.addAndGet(),
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: width,
-            child: widget.eventBuilder(context, index, item),
-          ),
-        );
+                controller: _controllers.addAndGet(),
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: width,
+                  child: widget.eventBuilder(context, index, item),
+                ),
+              );
       },
-      separatorBuilder: (context, _) => Padding(padding: EdgeInsets.only(top: widget.eventSeparatorPadding)),
+      separatorBuilder: (context, _) =>
+          Padding(padding: EdgeInsets.only(top: widget.eventSeparatorPadding)),
       itemCount: data.length,
     );
 

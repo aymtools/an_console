@@ -56,22 +56,30 @@ bool _willShowing = false;
 void _willShow() {
   if (_willShowing) return;
   try {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _willShowing = false;
-      if (!_toolsStatus.value) return;
-      if (_btnConsole == null) {
-        _btnConsole = _createFloatingButton();
-        var navigator = AnConsole.instance._navigator;
-        if (navigator == null) {
-          navigator = WidgetsBinding.instance.rootElement!
-              .findStateForChildren<NavigatorState>();
-          AnConsole.instance._navigator = navigator;
-        }
-        navigator?.overlay!.insert(_btnConsole!);
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback(_willShowWait);
     _willShowing = true;
   } catch (_) {}
+}
+
+void _willShowWait(_) {
+  if (!_willShowing) return;
+  if (!_toolsStatus.value) {
+    _willShowing = false;
+    return;
+  }
+  if (_btnConsole == null) {
+    var navigator = AnConsole.instance._navigator;
+    navigator ??= WidgetsBinding.instance.rootElement!
+        .findStateForChildren<NavigatorState>();
+    if (navigator == null) {
+      WidgetsBinding.instance.addPostFrameCallback(_willShowWait);
+    } else {
+      _willShowing = false;
+      _btnConsole = _createFloatingButton();
+      AnConsole.instance._navigator = navigator;
+      navigator.overlay?.insert(_btnConsole!);
+    }
+  }
 }
 
 void _show() {

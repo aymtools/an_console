@@ -1,3 +1,7 @@
+## 1.3.1
+
+* Optimize the first-render logic
+
 ## 1.3.0
 
 * EventManagerConsole: Add filtering, clearing, and saving capabilities

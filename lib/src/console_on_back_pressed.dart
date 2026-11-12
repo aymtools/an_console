@@ -62,11 +62,10 @@ void _willShow() {
 }
 
 void _willShowWait(_) {
-  if (!_willShowing) return;
   if (!_toolsStatus.value) {
     _willShowing = false;
-    return;
   }
+  if (!_willShowing) return;
   if (_btnConsole == null) {
     var navigator = AnConsole.instance._navigator;
     navigator ??= WidgetsBinding.instance.rootElement!

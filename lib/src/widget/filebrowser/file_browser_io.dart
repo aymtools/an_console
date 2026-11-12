@@ -19,7 +19,7 @@ typedef OnLongPress = void Function(
     FileSystemEntity entity, CallRefresh callRefresh);
 
 /// 悬浮按钮构建器
-typedef FloatingActionsBuilder = List<FloatingActionButton> Function(
+typedef FloatingActionsBuilder = List<Widget> Function(
     BuildContext context, String path, CallRefresh callRefresh);
 
 /// 文件浏览器的排序或过滤函数

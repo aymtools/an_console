@@ -1,7 +1,6 @@
 import 'dart:async';
 
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 /// 呼叫重新刷新列表
 typedef CallRefresh = void Function();
@@ -13,7 +12,7 @@ typedef OnPressFile = void Function(dynamic file, CallRefresh callRefresh);
 typedef OnLongPress = void Function(dynamic entity, CallRefresh callRefresh);
 
 /// 悬浮按钮构建器
-typedef FloatingActionsBuilder = List<FloatingActionButton> Function(
+typedef FloatingActionsBuilder = List<Widget> Function(
     BuildContext context, String path, CallRefresh callRefresh);
 
 /// 文件浏览器的排序或过滤函数

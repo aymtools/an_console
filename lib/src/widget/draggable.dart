@@ -1,8 +1,7 @@
 import 'dart:math';
 
-// ignore: deprecated_member_use
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 自定义的可拖动的悬浮 按钮 类似FloatingAction 但是使用overlay来实现
@@ -100,7 +99,8 @@ class _FloatingDraggableButtonState extends State<FloatingDraggableButton> {
 
     newOffset = Offset(
       max(min(newOffset.dx, _maxOffset.dx), 0.0),
-      max(min(newOffset.dy, _maxOffset.dy), kToolbarHeight),
+      // 56.0=kToolBarHeight
+      max(min(newOffset.dy, _maxOffset.dy), 56.0),
     );
 
     setState(() {

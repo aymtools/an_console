@@ -1,3 +1,4 @@
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 
 /// 仅用在AnConsole中的自定义控制台 为控制台增加一系列悬浮按钮 会自动联动滑动隐藏

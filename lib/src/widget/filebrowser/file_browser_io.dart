@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:an_console/src/console.dart';
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 

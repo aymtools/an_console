@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 
 import 'console_theater.dart';

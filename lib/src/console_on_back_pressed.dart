@@ -61,7 +61,7 @@ void _willShow() {
   } catch (_) {}
 }
 
-void _willShowWait(_) {
+void _willShowWait(Duration _) {
   if (!_toolsStatus.value) {
     _willShowing = false;
   }

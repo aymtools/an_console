@@ -1,3 +1,8 @@
+## 1.3.2
+
+* Decouple Material dependency.
+* Optimize `FloatingActionsBuilder` return type.
+
 ## 1.3.1
 
 * Optimize the first-render logic
